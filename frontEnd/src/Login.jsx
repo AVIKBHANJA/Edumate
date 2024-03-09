@@ -1,7 +1,7 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword,signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "./Firebase/FirebaseConfig";
+import { auth, googleProvider }  from "./Firebase/FirebaseConfig";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -24,7 +24,16 @@ function Login() {
       console.log(error);
     }
   };
-
+  const signInWithGoogle = async () => {
+    try {
+      const user = await signInWithPopup(auth, googleProvider);
+      const users = localStorage.setItem("user", JSON.stringify(user));
+      alert("Signin Successful");
+      navigate("/home");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="flex  flex-wrap bg-gradient-to-b from-blue-500 to-slate-50 justify-center items-center">
@@ -71,13 +80,16 @@ function Login() {
             onClick={signin}
             className="mt-4 p-4 rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300"
           >
-            {/* <Link to="/profile"> */}
-            Login
-            {/* </Link> */}
+           
+            Log in
+            
           </button>
-          {/* <button onClick={() => loginWithRedirect() }
+        
+         <button
+         onClick={signInWithGoogle}
             className="mt-4 p-4 rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300"
-            >Log In With Google</button>; */}
+            >Log In With Google</button>
+        
         </div>
         <div className=" sm:block ">
           {/* Show the image only on screens wider than small (sm) and position it to the left */}
@@ -85,7 +97,7 @@ function Login() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
 export default Login;

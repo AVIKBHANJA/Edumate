@@ -42,10 +42,9 @@ function Register() {
           <span className="m-1">
             <label>Email:</label>
             <input
-              
               id="email"
               type="email"
-              name='email'
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="rounded mx-3"
@@ -56,23 +55,25 @@ function Register() {
           <span className="m-1">
             <label>Password:</label>
             <input
-             
               id="password"
               type="password"
               value={password}
-          onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className="rounded mx-3"
               placeholder="Password"
               // required
             />
           </span>
 
-          
           <button
             onClick={register}
-            className="p-1 w-3/4 self-center rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300"
+            className=" m-2 p-2 w-3/4 self-center rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300"
           >
             Register
+          </button>
+
+          <button className="m-2 p-2 w-3/4 self-center rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300">
+            <Link to="/login">Log In With Google</Link>
           </button>
         </div>
         <div>
@@ -86,6 +87,6 @@ function Register() {
       </div>
     </>
   );
-};
+}
 
 export default Register;
