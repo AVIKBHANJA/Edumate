@@ -1,44 +1,26 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+// import axios from "axios";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { auth } from "./Firebase/FirebaseConfig";
 
 import "./Styles//Register.css";
 
-const Register = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    username: "",
-    mobile_number: "",
-    fullName: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+function Register() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // const navigate = useNavigate();
+  const register = async () => {
+    if (email === "" || password === "") {
+      return alert("Please fill all fields");
+    }
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/users/register",
-        formData
-      );
-
-      if (response.data === "exist") {
-        alert("User already exists");
-      } else if (response.data === "notexist") {
-        alert("Registration successful");
-        // Redirect or handle success as needed
-        
-      }
+      const user = await createUserWithEmailAndPassword(auth, email, password);
+      alert("Signup Successful");
+      setEmail("");
+      setPassword("");
     } catch (error) {
-      console.error("Error during registration:", error);
-      // alert("Something went wrong");
+      console.log(error);
     }
   };
   return (
@@ -56,95 +38,50 @@ const Register = () => {
               Sign in
             </Link>
           </div>
-          <form className="flex flex-col" onSubmit={handleSubmit}>
-            <span className="m-1">
-              <label>Email:</label>
-              <input
-                type="text"
-                id="email"
-                name="email"
-                placeholder="email"
-                minLength="4"
-                maxLength="18"
-                size="10"
-                className="rounded mx-3"
-                onChange={handleChange}
-                // required
-              />
-            </span>
-            <span className="m-1">
-              <label>Password:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="password"
-                minLength="8"
-                maxLength="18"
-                size="10"
-                className="rounded mx-3"
-                onChange={handleChange}
-                // required
-              />
-            </span>
 
-            <span className="m-1">
-              <label>Username:</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                placeholder="username"
-                minlength="4"
-                maxlength="18"
-                size="10"
-                className=" rounded"
-                onChange={handleChange}
-                // required
-              />
-            </span>
-            <span className="m-1">
-              <label>Name:</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="name"
-                minLength="4"
-                maxLength="18"
-                size="10"
-                className="rounded mx-3"
-                onChange={handleChange}
-                // required
-              />
-            </span>
+          <span className="m-1">
+            <label>Email:</label>
+            <input
+              
+              id="email"
+              type="email"
+              name='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="rounded mx-3"
+              placeholder="Email"
+              // required
+            />
+          </span>
+          <span className="m-1">
+            <label>Password:</label>
+            <input
+             
+              id="password"
+              type="password"
+              value={password}
+          onChange={(e) => setPassword(e.target.value)}
+              className="rounded mx-3"
+              placeholder="Password"
+              // required
+            />
+          </span>
 
-            <span className="m-1">
-              <label>Mobile Number:</label>
-              <input
-                type="number"
-                id="mobileno"
-                name="mobileno"
-                placeholder="mobile no."
-                minLength="10"
-                maxLength="10"
-                size="10"
-                className="rounded mx-3"
-                onChange={handleChange}
-                // required
-              />
-            </span>
-            <button
-              type="submit"
-              className="p-1 w-3/4 self-center rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300"
-            >
-              Register
-            </button>
-          </form>
+          
+          <button
+            onClick={register}
+            className="p-1 w-3/4 self-center rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300"
+          >
+            Register
+          </button>
         </div>
-        <div className="">
+        <div>
           {/* Show the image only on screens wider than small (sm) and position it to the left */}
-          <img src="register1.png" alt="" className="scale-125" />
+          <img
+            src="register1.png"
+            alt="register page img"
+            className="scale-125"
+          />
         </div>
       </div>
     </>

@@ -1,47 +1,27 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { auth } from "./Firebase/FirebaseConfig";
 
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // console.log(auth?.currentUser?.email);
+  const navigate = useNavigate();
 
-import React, { useState } from "react";
-import axios from "axios";
-import { Navigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
-
-const Login = () => {
-  const { loginWithRedirect } = useAuth0();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-  const submit = () => {
-    // Redirect to "/Profile" after successful login
-    return <Navigate to="/Profile" />;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const signin = async () => {
+    if (email === "" || password === "") {
+      return alert("Please fill all fields");
+    }
     try {
-      const response = await axios.post(
-        "http://localhost:8000/login",
-        formData
-      );
-
-      if (response.data === "success") {
-        alert("Login successful");
-        // Redirect or handle success as needed
-      } else if (response.data === "failure") {
-        alert("Invalid credentials");
-      }
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      const users = localStorage.setItem("user", JSON.stringify(user));
+      alert("Signin Successful");
+      navigate("/home");
+      setEmail("");
+      setPassword("");
     } catch (error) {
-      //console.error("Error during login:", error);
-      //alert("Something went wrong");
+      console.log(error);
     }
   };
 
@@ -62,45 +42,42 @@ const Login = () => {
               Sign up
             </Link>
           </div>
-          <form onSubmit={handleSubmit} className="flex flex-col">
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="email"
-              minlength="4"
-              maxlength="18"
-              size="10"
-              className=" rounded	m-2 "
-              onChange={handleChange}
-              required
-            />
-            <br />
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="password"
-              minLength="8"
-              maxLength="18"
-              size="10"
-              className="rounded m-1"
-              onChange={handleChange}
-              required
-            />
 
-            <button
-              type="submit"
-              className="mt-4 p-4 rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300"
-            >
-              <Link to="/profile">Login</Link>
-            </button>
-            <button onClick={() => loginWithRedirect() }
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            id="email"
+            placeholder="email"
+            className=" rounded	m-2 "
+            required
+          />
+          <br />
+          <label htmlFor="password">Password:</label>
+          <input
+            id="password"
+            name="password"
+            placeholder="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="rounded m-1"
+            required
+          />
+
+          <button
+            onClick={signin}
             className="mt-4 p-4 rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300"
-            >Log In With Google</button>;
-          </form>
+          >
+            {/* <Link to="/profile"> */}
+            Login
+            {/* </Link> */}
+          </button>
+          {/* <button onClick={() => loginWithRedirect() }
+            className="mt-4 p-4 rounded bg-blue-600 text-slate-50 hover:bg-indigo-700 hover:text-stone-300"
+            >Log In With Google</button>; */}
         </div>
         <div className=" sm:block ">
           {/* Show the image only on screens wider than small (sm) and position it to the left */}
@@ -109,6 +86,6 @@ const Login = () => {
       </div>
     </>
   );
-};
+}
 
 export default Login;
